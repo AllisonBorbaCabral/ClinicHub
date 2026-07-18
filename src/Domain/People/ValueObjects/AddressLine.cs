@@ -11,7 +11,7 @@ public sealed class AddressLine
     {
         Value = value;
     }
-    public Result<AddressLine> Create(string value)
+    public static Result<AddressLine> Create(string value)
     {
         var addressLine = value.Trim();
 
