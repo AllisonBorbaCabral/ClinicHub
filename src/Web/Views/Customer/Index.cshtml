@@ -1,0 +1,53 @@
+@using DemoMVC.Web.Models.Customers
+@model IReadOnlyList<CustomerViewModel>
+
+@{
+    ViewData["Title"] = "Clientes";
+}
+
+<h1>Clientes</h1>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <a class="btn btn-primary" asp-area="" asp-controller="Customer" asp-action="Create">Novo</a>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        Nenhum registro encontrado.
+    </div>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Dt Nascimento</th>
+                <th>Dt Cadastro</th>
+                <th>Dt Últ Alteração</th>
+                <th>Ativa?</th>
+                <th>Opções</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var c in Model)
+            {
+                <tr>
+                    <td>@c.Name</td>
+                    <td>@c.BirthDate</td>
+                    <td>@c.CreatedAt</td>
+                    <td>@c.UpdatedAt</td>
+                    <td>@(c.IsActive ? "Sim" : "Não")</td>
+                    <td>
+                        @* <a asp-page="./Update" asp-route-id="@category.Id" class="btn btn-sm btn-warning" title="Editar"
+                           aria-label="Editar">
+                            <i class="bi bi-pencil"></i>
+                        </a> *@
+                        <a class="btn btn-primary" asp-area="" asp-controller="Customer" asp-action="">Editar</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

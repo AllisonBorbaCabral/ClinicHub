@@ -1,0 +1,43 @@
+@using DemoMVC.Web.Models.Customers
+@model CustomerViewModel
+
+@{
+    ViewData["Title"] = "Cadastro de Cliente";
+}
+
+<h1>Cadastro de Cliente</h1>
+
+<form asp-action="Create" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="row">
+        <div class="col-md-8 mb-3">
+            <label asp-for="Name" class="form-label">Nome</label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label asp-for="BirthDate" class="form-label">Dt Nascimento</label>
+            <input asp-for="BirthDate" class="form-control" type="date" />
+            <span asp-validation-for="BirthDate" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-check mb-3">
+            <input asp-for="IsActive" class="form-check-input" />
+            <label asp-for="IsActive" class="form-check-label">Ativo?</label>
+            <span asp-validation-for="IsActive" class="text-danger"></span>
+        </div>
+    </div>
+
+    <hr>
+
+    <button type="submit" class="btn btn-primary">Salvar</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
