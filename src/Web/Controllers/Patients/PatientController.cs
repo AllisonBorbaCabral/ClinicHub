@@ -1,23 +1,23 @@
 using Microsoft.AspNetCore.Mvc;
-using DemoMVC.Web.Models.Customers;
-using DemoMVC.Web.Interfaces.Customers;
-using DemoMVC.Application.Customers.DTOs;
+using DemoMVC.Web.Models.Patients;
+using DemoMVC.Application.Patients.DTOs;
+using DemoMVC.Application.Patients.Interfaces;
 
-namespace DemoMVC.Web.Controllers.Customers;
+namespace DemoMVC.Web.Controllers.Patients;
 
-public class CustomerController : Controller
+public class PatientController : Controller
 {
-    private readonly ICustomerService _customerService;
-    public CustomerController(ICustomerService customerService)
+    private readonly IPatientService _patientService;
+    public PatientController(IPatientService patientService)
     {
-        _customerService = customerService;
+        _patientService = patientService;
     }
     public async Task<IActionResult> Index()
     {
-        var dtos = await _customerService.GetAllAsync();
+        var dtos = await _patientService.GetAllAsync();
 
-        var customers = dtos
-            .Select(c => new CustomerViewModel
+        var patients = dtos
+            .Select(c => new PatientViewModel
             {
                 Id = c.Id,
                 Name = c.Name,
@@ -28,7 +28,7 @@ public class CustomerController : Controller
             })
             .ToList();
 
-        return View(customers);
+        return View(patients);
     }
     [HttpGet]
     public async Task<IActionResult> Create()
@@ -54,7 +54,7 @@ public class CustomerController : Controller
     }
     [HttpPost]
     public async Task<IActionResult> Create(
-        CustomerViewModel model
+        PatientViewModel model
     )
     {
         if (!ModelState.IsValid)
@@ -63,15 +63,15 @@ public class CustomerController : Controller
         if (string.IsNullOrEmpty(model.Name))
             return View(model);
 
-        var request = new CreateCustomerDTO(
+        var request = new CreatePatientDTO(
             Name: model.Name,
             BirthDate: model.BirthDate,
             IsActive: model.IsActive
         );
 
-        var customer = await _customerService.Create(request);
+        var patient = await _patientService.Create(request);
 
-        if (customer is null)
+        if (patient is null)
             return View(model);
 
         return RedirectToAction(nameof(Index));

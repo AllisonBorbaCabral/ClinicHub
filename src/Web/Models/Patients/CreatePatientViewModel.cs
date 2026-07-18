@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace DemoMVC.Web.Models.Customers;
+namespace DemoMVC.Web.Models.Patients;
 
-public class CreateCustomerViewModel
+public class CreatePatientViewModel
 {
     [Required]
     public string Name { get; set; } = String.Empty;

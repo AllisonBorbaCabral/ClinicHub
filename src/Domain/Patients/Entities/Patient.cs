@@ -1,6 +1,6 @@
-namespace DemoMVC.Domain.Customers.Entities;
+namespace DemoMVC.Domain.Patients.Entities;
 
-public class Customer
+public class Patient
 {
     public Guid Id { get; private set; }
     public string? Name { get; private set; }
@@ -9,8 +9,8 @@ public class Customer
     public DateTime? UpdatedAt { get; private set; }
     public bool IsActive { get; private set; }
 
-    private Customer() { } //EF Core
-    private Customer(string name, DateOnly birthDate, bool isActive)
+    private Patient() { } //EF Core
+    private Patient(string name, DateOnly birthDate, bool isActive)
     {
         Id = Guid.NewGuid();
         Name = name;
@@ -18,9 +18,9 @@ public class Customer
         CreatedAt = DateTime.UtcNow;
         IsActive = isActive;
     }
-    public static Customer Create(string name, DateOnly birthDate, bool isActive)
+    public static Patient Create(string name, DateOnly birthDate, bool isActive)
     {
-        var obj = new Customer(name, birthDate, isActive);
+        var obj = new Patient(name, birthDate, isActive);
 
 
         // ajustar retorno para quando implementar result

@@ -1,20 +1,20 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using DemoMVC.Domain.Customers.Entities;
+using DemoMVC.Domain.Patients.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace DemoMVC.Infrastructure.Data;
 
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext(options)
 {
-    public DbSet<Customer> Customers => Set<Customer>();
+    public DbSet<Patient> Patients => Set<Patient>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
 
-        builder.Entity<Customer>(e =>
+        builder.Entity<Patient>(e =>
         {
-            e.ToTable("customers");
+            e.ToTable("patients");
 
             e.HasKey(e => e.Id);
 

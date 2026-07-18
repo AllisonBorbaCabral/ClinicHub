@@ -1,6 +1,6 @@
-namespace DemoMVC.Application.Customers.DTOs;
+namespace DemoMVC.Application.Patients.DTOs;
 
-public sealed record GetCustomerDTO(
+public sealed record GetPatientDTO(
     string Id,
     string Name,
     DateOnly BirthDate,

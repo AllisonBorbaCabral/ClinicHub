@@ -1,6 +1,6 @@
-namespace DemoMVC.Web.Models.Customers;
+namespace DemoMVC.Web.Models.Patients;
 
-public class CustomerViewModel
+public class PatientViewModel
 {
     public string? Id { get; set; }
     public string? Name { get; set; }
