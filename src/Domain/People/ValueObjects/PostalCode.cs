@@ -11,7 +11,7 @@ public sealed class PostalCode
     {
         Value = value;
     }
-    public Result<PostalCode> Create(string value)
+    public static Result<PostalCode> Create(string value)
     {
         var postalCode = value.Trim();
 

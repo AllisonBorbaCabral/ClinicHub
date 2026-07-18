@@ -11,7 +11,7 @@ public sealed class Neighborhood
     {
         Value = value;
     }
-    public Result<Neighborhood> Create(string value)
+    public static Result<Neighborhood> Create(string value)
     {
         var neighborhood = value.Trim();
 

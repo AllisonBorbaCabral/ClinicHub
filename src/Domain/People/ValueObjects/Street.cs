@@ -11,7 +11,7 @@ public sealed class Street
     {
         Value = value;
     }
-    public Result<Street> Create(string value)
+    public static Result<Street> Create(string value)
     {
         var street = value.Trim();
 

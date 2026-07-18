@@ -1,5 +1,5 @@
-using System.Text.RegularExpressions;
 using DemoMVC.Shared.Results;
+using System.Text.RegularExpressions;
 
 namespace DemoMVC.Domain.People.ValueObjects;
 
@@ -11,7 +11,7 @@ public sealed class StreetNumber
     {
         Value = value;
     }
-    public Result<StreetNumber> Create(string value)
+    public static Result<StreetNumber> Create(string value)
     {
         var streetNumber = value.Trim();
 
