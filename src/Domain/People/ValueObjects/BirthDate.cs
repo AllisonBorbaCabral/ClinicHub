@@ -10,7 +10,7 @@ public sealed class BirthDate
     {
         Value = value;
     }
-    public Result<BirthDate> Create(DateOnly value)
+    public static Result<BirthDate> Create(DateOnly value)
     {
         DateOnly min = new DateOnly(1900, 1, 1);
         DateOnly max = DateOnly.FromDateTime(DateTime.Today);
