@@ -1,0 +1,49 @@
+@using DemoMVC.Web.Models.People
+@model IReadOnlyList<ListPersonViewModel>
+
+@{
+    ViewData["Title"] = "Pessoas";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <a class="btn btn-primary" asp-area="" asp-controller="" asp-action="">Novo</a>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        Nenhum registro encontrado.
+    </div>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Dt Nascimento</th>
+                <th>CPF</th>
+                <th>Ativa?</th>
+                <th>Opções</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var p in Model)
+            {
+                <tr>
+                    <td>@p.Name</td>
+                    <td>@p.BirthDate</td>
+                    <td>@p.Cpf</td>
+                    <td>@(p.IsActive ? "Sim" : "Não")</td>
+                    <td>
+                        @* <a asp-page="./Update" asp-route-id="@category.Id" class="btn btn-sm btn-warning" title="Editar"
+                           aria-label="Editar">
+                            <i class="bi bi-pencil"></i>
+                        </a> *@
+                        <a class="btn btn-primary" asp-area="" asp-controller="" asp-action="">Editar</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
