@@ -1,5 +1,5 @@
 @using DemoMVC.Web.Models.Patients
-@model IReadOnlyList<PatientViewModel>
+@model IReadOnlyList<ListPatientViewModel>
 
 @{
     ViewData["Title"] = "Pacientes";
@@ -22,23 +22,23 @@ else
     <table class="table table-striped">
         <thead>
             <tr>
+                <th>Prontuário</th>
                 <th>Nome</th>
                 <th>Dt Nascimento</th>
-                <th>Dt Cadastro</th>
-                <th>Dt Últ Alteração</th>
+                <th>CPF</th>
                 <th>Ativa?</th>
                 <th>Opções</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var c in Model)
+            @foreach (var p in Model)
             {
                 <tr>
-                    <td>@c.Name</td>
-                    <td>@c.BirthDate</td>
-                    <td>@c.CreatedAt</td>
-                    <td>@c.UpdatedAt</td>
-                    <td>@(c.IsActive ? "Sim" : "Não")</td>
+                    <td>@p.MedicalRecord</td>
+                    <td>@p.Name</td>
+                    <td>@p.BirthDate</td>
+                    <td>@p.Cpf</td>
+                    <td>@(p.IsActive ? "Sim" : "Não")</td>
                     <td>
                         @* <a asp-page="./Update" asp-route-id="@category.Id" class="btn btn-sm btn-warning" title="Editar"
                            aria-label="Editar">
