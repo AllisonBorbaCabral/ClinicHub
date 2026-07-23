@@ -1,34 +1,31 @@
 using Microsoft.AspNetCore.Mvc;
 using DemoMVC.Web.Models.Patients;
-using DemoMVC.Application.Patients.DTOs;
 using DemoMVC.Application.Patients.Interfaces;
 
 namespace DemoMVC.Web.Controllers.Patients;
 
 public class PatientController : Controller
 {
-    private readonly IPatientService _patientService;
-    public PatientController(IPatientService patientService)
+    private readonly IPatientService _service;
+    public PatientController(IPatientService service)
     {
-        _patientService = patientService;
+        _service = service;
     }
     public async Task<IActionResult> Index()
     {
-        var dtos = await _patientService.GetAllAsync();
+        var dtos = await _service.GetAllAsync();
 
-        var patients = dtos
-            .Select(c => new PatientViewModel
+        return View(dtos.Data?
+            .Select(c => new ListPatientViewModel
             {
                 Id = c.Id,
+                MedicalRecord = c.MedicalRecord,
                 Name = c.Name,
                 BirthDate = c.BirthDate,
-                CreatedAt = c.CreatedAt,
-                UpdatedAt = c.UpdatedAt,
+                Cpf = c.Cpf,
                 IsActive = c.IsActive
             })
-            .ToList();
-
-        return View(patients);
+            .ToList());
     }
     [HttpGet]
     public async Task<IActionResult> Create()
@@ -52,28 +49,28 @@ public class PatientController : Controller
 
         return View();
     }
-    [HttpPost]
-    public async Task<IActionResult> Create(
-        PatientViewModel model
-    )
-    {
-        if (!ModelState.IsValid)
-            return View(model);
+    // [HttpPost]
+    // public async Task<IActionResult> Create(
+    //     PatientViewModel model
+    // )
+    // {
+    //     if (!ModelState.IsValid)
+    //         return View(model);
 
-        if (string.IsNullOrEmpty(model.Name))
-            return View(model);
+    //     if (string.IsNullOrEmpty(model.Name))
+    //         return View(model);
 
-        var request = new CreatePatientDTO(
-            Name: model.Name,
-            BirthDate: model.BirthDate,
-            IsActive: model.IsActive
-        );
+    //     var request = new CreatePatientDTO(
+    //         Name: model.Name,
+    //         BirthDate: model.BirthDate,
+    //         IsActive: model.IsActive
+    //     );
 
-        var patient = await _patientService.Create(request);
+    //     var patient = await _patientService.Create(request);
 
-        if (patient is null)
-            return View(model);
+    //     if (patient is null)
+    //         return View(model);
 
-        return RedirectToAction(nameof(Index));
-    }
+    //     return RedirectToAction(nameof(Index));
+    // }
 }
