@@ -530,3 +530,5 @@ FodyWeavers.xsd
 *.wps
 
 # End of https://www.toptal.com/developers/gitignore/api/aspnetcore,csharp,text
+
+*.DS_Store
