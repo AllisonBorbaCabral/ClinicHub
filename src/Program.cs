@@ -1,17 +1,23 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-// Import Infrastructure
+// Import DbContext
 using DemoMVC.Infrastructure.Data;
-using DemoMVC.Infrastructure.Customers.Repositories;
+
+// Import Infrastructure
+using DemoMVC.Infrastructure.People.Repositories;
+using DemoMVC.Infrastructure.Patients.Repositories;
+using DemoMVC.Infrastructure.Patients.Services;
 
 // Import Application
-using DemoMVC.Application.Customers.Services;
-using DemoMVC.Application.Customers.Interfaces;
+using DemoMVC.Application.People.Services;
+using DemoMVC.Application.Patients.Services;
+using DemoMVC.Application.People.Interfaces;
+using DemoMVC.Application.Patients.Interfaces;
 
-// Import Web
-using DemoMVC.Web.Interfaces.Customers;
-using Microsoft.CodeAnalysis.Options;
+// Import Repository Interface
+using DemoMVC.Domain.People.Repositories;
+using DemoMVC.Domain.Patients.Repositories;
 
 var applicationOptions = new WebApplicationOptions
 {
@@ -22,19 +28,23 @@ var applicationOptions = new WebApplicationOptions
 var builder = WebApplication.CreateBuilder(applicationOptions);
 
 // Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlite(connectionString));
+builder.Services.AddDatabase(builder.Configuration);
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 //Repositories
-builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<IPersonRepository, PersonRepository>();
+builder.Services.AddScoped<IPersonUniquenessCheckerRepository, PersonRepository>();
+
+builder.Services.AddScoped<IPatientRepository, PatientRepository>();
+builder.Services.AddScoped<IPersonUniquenessCheckerRepository, PatientRepository>();
 
 //Services
-builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<IPersonService, PersonService>();
+builder.Services.AddScoped<IPatientService, PatientService>();
+builder.Services.AddScoped<IMedicalRecordGenerator, MedicalRecordGenerator>();
 
 builder.Services.AddControllersWithViews()
                 .AddRazorOptions(options =>
