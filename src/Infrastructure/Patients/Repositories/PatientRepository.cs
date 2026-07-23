@@ -5,6 +5,7 @@ using DemoMVC.Domain.Patients.Entities;
 using DemoMVC.Domain.People.Repositories;
 using DemoMVC.Shared.Domain.ValueObjects;
 using DemoMVC.Domain.Patients.Repositories;
+using DemoMVC.Domain.Patients.ValueObjects;
 
 namespace DemoMVC.Infrastructure.Patients.Repositories;
 
@@ -42,7 +43,7 @@ public class PatientRepository : IPatientRepository, IPersonUniquenessCheckerRep
             .Include(p => p.EmergencyContact)
             .FirstOrDefaultAsync(p => p.Id == id);
     }
-    public async Task<Patient?> GetByMedicalRecordAsync(int medicalRecord)
+    public async Task<Patient?> GetByMedicalRecordAsync(MedicalRecord medicalRecord)
     {
         return await _context.Patients
             .AsNoTracking()
