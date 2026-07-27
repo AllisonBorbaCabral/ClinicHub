@@ -2,54 +2,53 @@ using DemoMVC.Shared.Results;
 
 namespace DemoMVC.Shared.Domain.ValueObjects;
 
-public sealed class Cpf
+public sealed class Cpf : ValueObject
 {
     public string Value { get; private set; } = null!;
-    private Cpf() { } // EF Core
-    private Cpf(string value)
+    private Cpf() { }
+    private Cpf(string value) => Value = value;
+    public static Result<Cpf> Create(string? value)
     {
-        Value = value;
+        var cpfResult = Normalize(value);
+        if (cpfResult.IsFailure)
+            return Result<Cpf>.Fail(cpfResult.Errors);
+
+        return Result<Cpf>.Ok(new Cpf(cpfResult.Data));
     }
-    public static Result<Cpf> Create(string value)
+    private static Result<string> Normalize(string? value)
     {
-        var normalized = Normalize(value);
+        if (string.IsNullOrWhiteSpace(value))
+            return Result<string>.Fail("CPF não pode ser nulo ou vazio.");
 
-        if (!IsValid(normalized))
-            return Result<Cpf>.Fail("CPF inválido.");
+        value = new string(value.Trim().Where(char.IsDigit).ToArray());
 
-        return Result<Cpf>.Ok(new Cpf(normalized));
+        if (value.Length != 11)
+            return Result<string>.Fail("CPF deve conter 11 dígitos.");
+
+        if (value.Distinct().Count() == 1)
+            return Result<string>.Fail("CPF deve conter mais de um caracter.");
+
+        if (!IsValid(value))
+            return Result<string>.Fail("CPF inválido.");
+
+        return Result<string>.Ok(value);
     }
-    private static bool IsValid(string cPF)
+    private static bool IsValid(string value)
     {
-        if (string.IsNullOrWhiteSpace(cPF))
-            return false;
+        var firstDigit = CalculateDigit(value, 9, 10);
+        var secondDigit = CalculateDigit(value, 10, 11);
 
-        var cpf = Normalize(cPF);
-
-        if (cpf.Length != 11)
-            return false;
-
-        if (cpf.Distinct().Count() == 1)
-            return false;
-
-        var firstDigit = CalculateDigit(cpf, 9, 10);
-        var secondDigit = CalculateDigit(cpf, 10, 11);
-
-        return cpf[9] == firstDigit.ToString()[0] &&
-               cpf[10] == secondDigit.ToString()[0];
+        return value[9] == (char)(firstDigit + '0')
+            && value[10] == (char)(secondDigit + '0');
     }
-    private static string Normalize(string value)
-    {
-        return new string(value.Where(char.IsDigit).ToArray());
-    }
-    private static int CalculateDigit(string cPF, int length, int initialWeight)
+    private static int CalculateDigit(string value, int length, int initialWeight)
     {
         var sum = 0;
         var weight = initialWeight;
 
         for (var i = 0; i < length; i++)
         {
-            var number = cPF[i] - '0';
+            var number = value[i] - '0';
 
             sum += number * weight;
             weight--;
@@ -59,8 +58,17 @@ public sealed class Cpf
 
         return remainder < 2 ? 0 : 11 - remainder;
     }
-    public override string ToString()
+    private string Format()
     {
-        return Value;
+        if (string.IsNullOrWhiteSpace(Value) || Value.Length != 11)
+            return Value ?? string.Empty;
+
+        return $"{Value[..3]}.{Value[3..6]}.{Value[6..9]}-{Value[9..]}";
+    }
+    public override string ToString() => Format();
+    public static implicit operator string(Cpf cpf) => cpf.Value;
+    protected override IEnumerable<object?> GetEqualityComponents()
+    {
+        yield return Value;
     }
 }
