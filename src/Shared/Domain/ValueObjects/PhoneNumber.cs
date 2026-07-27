@@ -3,34 +3,34 @@ using System.Text.RegularExpressions;
 
 namespace DemoMVC.Shared.Domain.ValueObjects;
 
-public sealed class PhoneNumber
+public sealed class PhoneNumber : ValueObject
 {
-    public string Value { get; private set; } = null!;
-    private PhoneNumber() { } // EF Core
-    private PhoneNumber(string value)
+    public string? Value { get; private set; }
+    private PhoneNumber() { }
+    private PhoneNumber(string? value) => Value = value;
+    public static Result<PhoneNumber> Create(string? value)
     {
-        Value = value;
+        var phoneNumberResult = Normalize(value);
+
+        if (phoneNumberResult.IsFailure)
+            return Result<PhoneNumber>.Fail(phoneNumberResult.Errors);
+
+        return Result<PhoneNumber>.Ok(new PhoneNumber(phoneNumberResult.Data));
     }
-    public static Result<PhoneNumber> Create(string phone)
+    private static Result<string?> Normalize(string? value)
     {
-        var normalized = Normalize(phone);
+        if (string.IsNullOrWhiteSpace(value))
+            return Result<string?>.Ok(null);
 
-        if (!IsValid(normalized))
-            return Result<PhoneNumber>.Fail("Número de celular inválido.");
-
-        return Result<PhoneNumber>.Ok(new PhoneNumber(normalized));
-    }
-    private static string Normalize(string phone)
-    {
-        if (string.IsNullOrWhiteSpace(phone))
-            return string.Empty;
-
-        var digits = Regex.Replace(phone, @"\D", "");
+        var digits = Regex.Replace(value.Trim(), @"\D", "");
 
         if (digits.StartsWith("55") && digits.Length == 13)
             digits = digits[2..];
 
-        return digits;
+        if (!IsValid(digits))
+            return Result<string?>.Fail("Número de celular inválido.");
+
+        return Result<string?>.Ok(digits);
     }
     private static bool IsValid(string phone)
     {
@@ -51,12 +51,11 @@ public sealed class PhoneNumber
 
         return true;
     }
-    private string Formatted()
+    private string? Format() => $"({Value?[..2]}) {Value?.Substring(2, 5)}-{Value?.Substring(7, 4)}";
+    public override string? ToString() => Format();
+    public static implicit operator string?(PhoneNumber phoneNumber) => phoneNumber.Value;
+    protected override IEnumerable<object?> GetEqualityComponents()
     {
-        return $"({Value[..2]}) {Value.Substring(2, 5)}-{Value.Substring(7, 4)}";
-    }
-    public override string ToString()
-    {
-        return Formatted();
+        yield return Value;
     }
 }
