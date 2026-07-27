@@ -7,10 +7,7 @@ public sealed class PersonName : ValueObject
 {
     public string Value { get; private set; } = null!;
     private PersonName() { }
-    private PersonName(string value)
-    {
-        Value = value;
-    }
+    private PersonName(string value) => Value = value;
     public static Result<PersonName> Create(string? value)
     {
         var personNameResult = Normalize(value);
@@ -24,7 +21,7 @@ public sealed class PersonName : ValueObject
         if (string.IsNullOrWhiteSpace(value))
             return Result<string>.Fail("Nome não pode ser nulo ou vazio.");
 
-        value = Regex.Replace(value.Trim(), @"\s+", " ");
+        value = Regex.Replace(value.Trim(), @"\s+", " ").ToLowerInvariant();
 
         if (value.Length < 5)
             return Result<string>.Fail("Nome deve ter no mínimo 5 caracteres.");
