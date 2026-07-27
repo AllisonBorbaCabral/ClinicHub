@@ -24,7 +24,7 @@ public sealed class Street : ValueObject
         if (string.IsNullOrWhiteSpace(value))
             return Result<string>.Fail("Rua não pode ser vazio ou nulo.");
 
-        value = Regex.Replace(value.Trim(), @"\s+", " ");
+        value = Regex.Replace(value.Trim(), @"\s+", " ").ToLowerInvariant();
 
         if (value.Length < 3)
             return Result<string>.Fail("Rua deve ter no mínimo 3 caracteres.");

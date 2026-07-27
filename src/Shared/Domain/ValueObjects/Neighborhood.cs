@@ -21,7 +21,7 @@ public sealed class Neighborhood : ValueObject
         if (string.IsNullOrWhiteSpace(value))
             return Result<string>.Fail("Bairro não pode ser vazio ou nulo.");
 
-        value = Regex.Replace(value.Trim(), @"\s+", " ");
+        value = Regex.Replace(value.Trim(), @"\s+", " ").ToLowerInvariant();
 
         if (value.Length < 3)
             return Result<string>.Fail("Bairro deve ter no mínimo 3 caracteres.");
