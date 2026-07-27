@@ -1,32 +1,51 @@
+using System.Net.Mail;
 using DemoMVC.Shared.Results;
 
 namespace DemoMVC.Shared.Domain.ValueObjects;
 
-public sealed class Email
+public sealed class Email : ValueObject
 {
-    public string Value { get; private set; } = null!;
-    private Email() { } // EF Core
-    private Email(string value)
+    public string? Value { get; private set; }
+    private Email() { }
+    private Email(string? value) => Value = value;
+    public static Result<Email> Create(string? value)
     {
-        Value = value;
+        var emailResult = Normalize(value);
+        if (emailResult.IsFailure)
+            return Result<Email>.Fail(emailResult.Errors);
+
+        return Result<Email>.Ok(new Email(emailResult.Data));
     }
-    public static Result<Email> Create(string value)
+    private static Result<string?> Normalize(string? value)
     {
-        value = value.Trim();
-
         if (string.IsNullOrWhiteSpace(value))
-            return Result<Email>.Fail("O campo email não pode ser vazio.");
+            return Result<string?>.Ok(null);
 
-        if (value.Length > 255)
-            return Result<Email>.Fail("O campo email não pode ser maior que 255 caracteres.");
+        value = value.Trim().ToLowerInvariant();
+
+        if (value.Length > 254)
+            return Result<string?>.Fail("E-mail não pode conter mais que 254 caracteres.");
 
         if (value.Contains(' '))
-            return Result<Email>.Fail("O campo email não pode ter espaços em branco.");
+            return Result<string?>.Fail("E-mail não pode conter espaços em branco.");
 
-        return Result<Email>.Ok(new Email(value));
+        if (!IsValid(value))
+            return Result<string?>.Fail("E-mail inválido.");
+
+        return Result<string?>.Ok(value);
     }
-    public override string ToString()
+    private static bool IsValid(string value)
     {
-        return Value;
+        var email = new MailAddress(value);
+
+        if (email.Address != value)
+            return false;
+        return true;
+    }
+    public override string? ToString() => Value;
+    public static implicit operator string?(Email email) => email.Value;
+    protected override IEnumerable<object?> GetEqualityComponents()
+    {
+        yield return Value;
     }
 }
